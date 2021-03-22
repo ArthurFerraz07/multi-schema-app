@@ -5,11 +5,10 @@ class Company < ApplicationRecord
   def generate_schema
     # binding.pry
     if schema.present? &&
-      Rails.application.database_schemas.exclude?(schema) &&
-      schema.to_s.strip.delete('^a-z').downcase == schema
+       ActiveRecord::Base.connection.schema_names.exclude?(schema) &&
+       schema.to_s.strip.delete('^a-z').downcase == schema
 
-      sql = "CREATE SCHEMA #{schema}"
-      ActiveRecord::Base.connection.execute(sql)
+      ActiveRecord::Base.connection.create_schema(schema)
       run_migrations
     else
       throw :abort
