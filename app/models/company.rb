@@ -3,7 +3,7 @@ class Company < ApplicationRecord
   before_create :generate_schema
 
   def generate_schema
-    binding.pry
+    # binding.pry
     if schema.present? &&
       Rails.application.database_schemas.exclude?(schema) &&
       schema.to_s.strip.delete('^a-z').downcase == schema
@@ -19,6 +19,11 @@ class Company < ApplicationRecord
   def run_migrations
     classes = []
     Dir["#{Rails.root}/db/migrate/*"].sort.each do |file|
+      migration = file.split('/').last.split('_').first
+      next if last_migration.present? && migration.to_time <= last_migration.to_time
+
+      self.last_migration = migration
+      # binding.pry
       require file
       f = File.open(file).read
       f.each_line do |line|
@@ -29,7 +34,7 @@ class Company < ApplicationRecord
         break
       end
     end
-    binding.pry
+    # binding.pry
     classes.each { |klass| klass.new.change(schema) }
   end
 end

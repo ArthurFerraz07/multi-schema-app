@@ -1,6 +1,4 @@
 class Car < ApplicationRecord
-  self.table_name = 'cars'
-
   def self.change_schema(schema = '')
     return nil if Rails.application.database_schemas.exclude?(schema)
 
