@@ -7,7 +7,7 @@ class ApplicationRecord < ActiveRecord::Base
     if writer_schema.blank? ||
        ActiveRecord::Base.connection.schema_names.exclude?(writer_schema) ||
        writer_schema == 'public' ||
-       self.class.table_name != writer_schema
+       self.class.table_name.split('.').first != writer_schema
       errors.add(:base, :invalid)
       throw :abort
     end
