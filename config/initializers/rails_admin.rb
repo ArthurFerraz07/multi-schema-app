@@ -1,6 +1,4 @@
 RailsAdmin.config do |config|
-  # binding.pry
-  config.parent_controller = '::CustomRailsAdminController'
   ### Popular gems integration
 
   ## == Devise ==
