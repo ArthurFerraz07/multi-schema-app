@@ -1,7 +1,8 @@
 class CarsController < ApplicationController
-  before_action :set_writer_schema
-  before_action :set_search_schema
-  after_action :reset_schema
+  around_action :set_db_connection
+  # before_action :set_writer_schema
+  # before_action :set_search_schema
+  # after_action :reset_schema
 
   def index
     sleep 2
@@ -25,6 +26,15 @@ class CarsController < ApplicationController
   end
 
   private
+
+  def set_db_connection
+    Thread.new {
+      set_writer_schema
+      set_search_schema
+      yield
+      reset_schema
+    }.join
+  end
 
   def set_writer_schema
     Car.change_writer_schema(@schema)
