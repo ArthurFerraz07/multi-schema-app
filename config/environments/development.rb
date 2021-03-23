@@ -61,6 +61,7 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   config.hosts << 'lvh.me'
+
   ENV.fetch('SUBDOMAINS', '').split(', ').each do |subdomain|
     config.hosts << "#{subdomain}.lvh.me"
   end

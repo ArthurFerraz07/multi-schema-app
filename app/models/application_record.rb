@@ -6,25 +6,32 @@ class ApplicationRecord < ActiveRecord::Base
   def schema_valid?
     if writer_schema.blank? ||
        ActiveRecord::Base.connection.schema_names.exclude?(writer_schema) ||
-       writer_schema == 'public' ||
-       self.class.table_name.split('.').first != writer_schema
+       writer_schema == 'public'
       errors.add(:base, :invalid)
       throw :abort
     end
     true
   end
 
-  def self.change_search_schema(search_schema = 'public')
-    raise 'invalid schema' if search_schema.blank? || ActiveRecord::Base.connection.schema_names.exclude?(search_schema)
-
-    ActiveRecord::Base.connection.schema_search_path = search_schema
+  def self.reset_scope_schema
+    ActiveRecord::Base.connection.schema_search_path = 'public'
+    self.table_name = "public.#{name.pluralize.downcase}"
     self
   end
 
-  def self.change_writer_schema(writer_schema = 'public')
+  def self.change_class_schema(writer_schema = 'public')
     raise 'invalid schema' if writer_schema.blank? || ActiveRecord::Base.connection.schema_names.exclude?(writer_schema)
 
-    self.table_name = writer_schema == 'public' ? name.pluralize.downcase : "#{writer_schema}.#{name.pluralize.downcase}"
-    self
+    dynamic_name = "#{name}#{writer_schema}"
+    Object.const_set(dynamic_name, clone) unless class_exists?(dynamic_name)
+    klass = dynamic_name.constantize
+    klass.table_name = "#{writer_schema}.#{name.pluralize.downcase}"
+    klass
+  end
+
+  def self.class_exists?(klass_name)
+    true if Kernel.const_get(klass_name)
+  rescue NameError
+    false
   end
 end
