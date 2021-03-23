@@ -26,25 +26,35 @@ RailsAdmin.config do |config|
 
   config.actions do
     dashboard do
-      # binding.pry
+      only %i[Company]
     end
-    index                         # mandatory
-    new
-    export
-    bulk_delete
-    show
-    edit
-    delete
-    show_in_app
+    index do
+      only %i[Company]
+    end
+    new do
+      only %i[Company]
+    end
+    export do
+      only %i[Company]
+    end
+    bulk_delete do
+      only %i[Company]
+    end
+    show do
+      only %i[Company]
+    end
+    edit do
+      only %i[Company]
+    end
+    delete do
+      only %i[Company]
+    end
+    show_in_app do
+      only %i[Company]
+    end
 
     ## With an audit adapter, you can add:
     # history_index
     # history_show
-  end
-
-  config.model 'Car' do
-    list do
-      scopes [:teste]
-    end
   end
 end

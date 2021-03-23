@@ -4,7 +4,10 @@ class ApplicationRecord < ActiveRecord::Base
   attr_accessor :writer_schema
 
   def schema_valid?
-    if writer_schema.blank? || ActiveRecord::Base.connection.schema_names.exclude?(writer_schema)
+    if writer_schema.blank? ||
+       ActiveRecord::Base.connection.schema_names.exclude?(writer_schema) ||
+       writer_schema == 'public' ||
+       self.class.table_name != writer_schema
       errors.add(:base, :invalid)
       throw :abort
     end
