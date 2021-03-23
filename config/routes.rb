@@ -8,8 +8,8 @@ end
 
 Rails.application.routes.draw do
   constraints SubdomainConstraint do
-    get '/cars/index' => 'application#cars_index'
-    get '/cars/create' => 'application#create_car'
+    get '/cars/index' => 'cars#index'
+    get '/cars/create' => 'cars#create'
   end
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
